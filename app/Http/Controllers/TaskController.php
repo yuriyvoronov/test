@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
+use Validator;
 
 class TaskController extends Controller
 {
     public function get(Request $request)
     {
-        // dump($request->status);
-        $user_id = 1;
+        $user_id = Auth::user()->id;
         $tasks = \App\Models\Task::where('user_id', $user_id);
         
         if(isset($request->status)) $tasks->where('status', $request->status);
@@ -50,7 +51,23 @@ class TaskController extends Controller
     public function post(Request $request)
     {
         if(!$request) return;
-        $user_id = 1;
+        $request->validate( [
+            'status' => [
+                function($attribute, $value, $fail)
+                {
+                    if ($attribute != "todo" && $attribute != "done")
+                    {
+                        $fail('Wrong status value');
+                    }
+                }
+            ],
+            'proirity' => 'required|integer|min:1|max:5',
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+
+        
+        $user_id = Auth::user()->id;
         $task = new \App\Models\Task();
         $task->status = $request->status;
         $task->priority = $request->priority;
@@ -63,7 +80,21 @@ class TaskController extends Controller
     public function update(Request $request)
     {
         if(!$request) return;
-        $user_id = 1;
+        $request->validate( [
+            'status' => [
+                function($attribute, $value, $fail)
+                {
+                    if ($attribute != "todo" && $attribute != "done")
+                    {
+                        $fail('Wrong status value');
+                    }
+                }
+            ],
+            'proirity' => 'required|integer|min:1|max:5',
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
         $task = \App\Models\Task::where('user_id', $user_id)->where('id', $request->id)->first();
         if($task)
         {
@@ -78,7 +109,7 @@ class TaskController extends Controller
     public function set_done(Request $request)
     {
         if(!$request) return;
-        $user_id = 1;
+        $user_id = Auth::user()->id;
         $task = \App\Models\Task::where('user_id', $user_id)->where('id', $request->task_id)->where('status','!=','done')->first();
         if(!is_null($task))
         {
@@ -92,7 +123,7 @@ class TaskController extends Controller
     public function delete(Request $request)
     {
         if(!$request) return;
-        $user_id = 1;
+        $user_id = Auth::user()->id;
         $task = \App\Models\Task::where('user_id', $user_id)->where('id', $request->task_id)->where('status', 'todo')->first();
         if(!is_null($task)) 
         {
