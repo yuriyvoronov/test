@@ -55,13 +55,14 @@ class TaskController extends Controller
             'status' => [
                 function($attribute, $value, $fail)
                 {
-                    if ($attribute != "todo" && $attribute != "done")
+                    if ($value != "todo" && $value != "done")
                     {
+                        
                         $fail('Wrong status value');
                     }
                 }
             ],
-            'proirity' => 'required|integer|min:1|max:5',
+            'priority' => 'required|integer|min:1|max:5',
             'title' => 'required',
             'description' => 'required',
         ]);
@@ -84,13 +85,13 @@ class TaskController extends Controller
             'status' => [
                 function($attribute, $value, $fail)
                 {
-                    if ($attribute != "todo" && $attribute != "done")
+                    if ($value != "todo" && $value != "done")
                     {
                         $fail('Wrong status value');
                     }
                 }
             ],
-            'proirity' => 'required|integer|min:1|max:5',
+            'priority' => 'required|integer|min:1|max:5',
             'title' => 'required',
             'description' => 'required',
         ]);
