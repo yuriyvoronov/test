@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
 use Validator;
 
 class TaskController extends Controller
@@ -40,10 +41,10 @@ class TaskController extends Controller
         {
             ($request->created_order == 'asc') ? $tasks->orderby('created_at', 'asc') : $tasks->orderby('created_at', 'desc'); 
         }
-        // if(isset($request->created_order))
-        // {
-        //     ($request->created_order == 'asc') ? $tasks->orderby('created_at', 'asc') : $tasks->orderby('created_at', 'desc'); 
-        // }
+        if(isset($request->completed_order))
+        {
+            ($request->completed_order == 'asc') ? $tasks->orderby('completed_at', 'asc') : $tasks->orderby('completed_at', 'desc'); 
+        }
 
         $res = $tasks->get();
         return($res);
@@ -115,6 +116,7 @@ class TaskController extends Controller
         if(!is_null($task))
         {
             $task->status = "done";
+            $task->completed_at = Carbon::now();
             $task->save();
         }
         else 
