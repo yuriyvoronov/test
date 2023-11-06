@@ -112,9 +112,15 @@ class TaskController extends Controller
     {
         if(!$request) return;
         $user_id = Auth::user()->id;
+
         $task = \App\Models\Task::where('user_id', $user_id)->where('id', $request->task_id)->where('status','!=','done')->first();
+
+        
         if(!is_null($task))
         {
+            if (\App\Models\Task::where('parent_id', $request->task_id)->where('status', 'todo')->get()->count() > 0)
+            return 'There are subtasks that not done yet.';
+            
             $task->status = "done";
             $task->completed_at = Carbon::now();
             $task->save();
